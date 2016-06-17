@@ -4,19 +4,28 @@ CS-Cart and Multi-Vendor deployment toolkit for developers and system administra
 ## Requirements
 1. [PHP](https://secure.php.net/) 5.5.0 and up.
 2. [deployer](http://deployer.org) 3.3.0 and up.
+3. PHP extensions:
+ - [yaml](https://pecl.php.net/package/yaml)
+ - [zip](https://pecl.php.net/package/zip)
 
 ## Prepare
 1. `git clone https://github.com/simtechdev/deploy-toolkit.git`
 2. `cd deploy-toolkit && mkdir -p deploy-toolkit/deploy`
 
 ## Usage example
-1. Copy release-{{release_name}}.zip in to `deploy` directory
-2. (Optional) Copy release-{{release_name}}.sql in to `deploy` directory
-3. Change `env('release_name','4.3.7');` in `deploy.php`
-4. Change server settings in `deploy.php`
-5. Run `dep deploy` to deploy code
+1. Change default settings in `config.yml`
+  - release_name: 4.3.8
+  - project_path: /local/path/to/project/cscart
+  - servers config
+2. Run `dep prepare:development` to zip code for development environment
+3. Run `dep deploy development` to deloy code in dev servers.
 
 ## Functions description
+### prepare:{{environment}}
+This function used for create zip archive release from project directory to local `./deploy` directory.
+
+ - create zip archive of project.
+
 ### deploy-clear
 This function can be used for deploy full code and full database.
 Follow steps are applied:

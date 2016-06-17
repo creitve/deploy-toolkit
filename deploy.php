@@ -1,21 +1,36 @@
 <?php
 /* Tool for deploy cscart */
 
+require 'yamlconfig.cls.php';
+
+set('config','config.yml');
+
+$defaultConfig = new YamlConfig(get('config'),'default');
+
 /* Environments */
-env('release_name','4.3.7');
+env('release_name',$defaultConfig->getReleaseName());
 env('www_user','apache');
 env('www_group','apache');
+
 /* Servers */
-server('dev', '10.0.0.10')
-    ->user('vagrant')
-    ->password('vagrant')
-    ->env('deploy_path', '/var/www/html')
-    ->env('dbhost','localhost')
-    ->env('dbuser','simtechdev')
-    ->env('dbpwd','simtechdev')
-    ->env('dbname','simtechdev');
 
+foreach ($defaultConfig->getServerList() as $server) {
+  server($server['name'], $server['host'])
+    ->user($server['user'])
+    ->password($server['password'])
+    ->env('deploy_path', $server['deploy_path'])
+    ->env('dbhost',$server['dbhost'])
+    ->env('dbuser',$server['dbuser'])
+    ->env('dbpwd',$server['dbpwd'])
+    ->env('dbname',$server['dbname']);
+}
 
+task('prepare:development',function(){
+  runLocally("mkdir -p ./deploy");
+  $devConfig = new YamlConfig(get('config'),'development');
+  $releaseArchive = env()->parse("release-{{release_name}}.zip");
+  $devConfig->zipDir("./deploy/$releaseArchive");
+})->desc('prepare development release from project directory');
 
 /* Preparing server for deployment. */
 task('deploy:prepare', function () {

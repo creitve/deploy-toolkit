@@ -3,3 +3,4 @@
 *.gz
 *.tgz
 *.tar.gz
+deploy/*
