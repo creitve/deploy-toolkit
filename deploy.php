@@ -5,6 +5,8 @@ require 'yamlconfig.cls.php';
 
 set('config','config.yml');
 
+set('default_stage', 'development');
+
 $defaultConfig = new YamlConfig(get('config'),'default');
 
 /* Environments */
@@ -18,6 +20,7 @@ foreach ($defaultConfig->getServerList() as $server) {
   server($server['name'], $server['host'])
     ->user($server['user'])
     ->password($server['password'])
+    ->stage($server['stage'])
     ->env('deploy_path', $server['deploy_path'])
     ->env('dbhost',$server['dbhost'])
     ->env('dbuser',$server['dbuser'])

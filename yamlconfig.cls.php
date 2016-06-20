@@ -82,9 +82,11 @@ class YamlConfig {
         $filePath = "$folder/$f";
         // Remove prefix from file path before add to zip.
         $localPath = substr($filePath, $exclusiveLength);
+        if (is_dir($filePath)) {
+          $localPath .= '/';
+        }
         if ( ($include !== false && preg_match($include, $localPath)) || ($include === false) ) {
           if ( ($exclude !== false && !preg_match($exclude, $localPath)) || ($exclude === false) ) {
-            //print "$include - $localPath\n";
             if (is_file($filePath)) {
               $zipFile->addFile($filePath, $localPath);
             } elseif (is_dir($filePath)) {

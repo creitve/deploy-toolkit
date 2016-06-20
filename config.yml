@@ -2,16 +2,18 @@
 
 release_name: 4.3.7
 
-project_path: /Users/extor/Documents/projects/cscart
+project_path: /path/to/projects/cscart
 
 stagings:
   default:
     include:
     exclude:
+      - "^var/cache/"
+      - "^.htaccess"
+      - "^config.local.php"
   development:
     include:
     exclude:
-      - "^var/"
 
 servers:
   - server:
