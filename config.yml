@@ -8,9 +8,6 @@ stagings:
   default:
     include:
     exclude:
-      - "^var/cache/"
-      - "^.htaccess"
-      - "^config.local.php"
   development:
     include:
     exclude:

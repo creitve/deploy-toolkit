@@ -3,6 +3,9 @@
 
 require 'yamlconfig.cls.php';
 
+/* Default arguments and options. */
+argument('stage', \Symfony\Component\Console\Input\InputArgument::OPTIONAL, 'Run tasks only on this server or group of servers.');
+
 set('config','config.yml');
 
 set('default_stage', 'development');
