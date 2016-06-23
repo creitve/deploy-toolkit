@@ -19,8 +19,8 @@ CS-Cart and Multi-Vendor deployment toolkit for developers and system administra
           * [migrate:dbinit](#migratedbinit)
           * [migrate:dbmigrate](#migratedbmigrate)
           * [migrate:phinx_config](#migratephinx_config)
-  * [Help needed?](#help-needed)
-  * [License](#license)
+      * [Help needed?](#help-needed)
+      * [License](#license)
 
 #### Demo
 
@@ -109,10 +109,10 @@ Run `php ./vendor/bin/phinx migrate` on server.
 
 Prepare phinx.yml config file and upload it to server.
 
-## Help needed? 
+#### Help needed? 
 
 For more documentation see [Deployer docs](http://deployer.org/docs) and deploy.php source code.
 
-## License
+#### License
 
 MIT
