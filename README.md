@@ -1,6 +1,6 @@
 ## About 
 
-CS-Cart and Multi-Vendor deployment toolkit for developers and system administrators.
+CS-Cart and Multi-Vendor deployment toolkit for developers and system administrators. Current version is 1.0.1.
 
   * [About](#about)
       * [Demo](#demo)
