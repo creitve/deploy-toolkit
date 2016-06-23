@@ -1,6 +1,8 @@
 # deploy-toolkit
 CS-Cart and Multi-Vendor deployment toolkit for developers and system administrators.
 
+[![asciicast](https://asciinema.org/a/dddsg010kaauba0g59o3nglo8.png)](https://asciinema.org/a/dddsg010kaauba0g59o3nglo8)
+
 ## Requirements
 1. [PHP](https://secure.php.net/) 5.5.0 and up.
 2. [deployer](http://deployer.org) 3.3.0 and up.
