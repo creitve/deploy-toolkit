@@ -1,0 +1,6 @@
+*.zip
+*.sql
+*.gz
+*.tgz
+*.tar.gz
+deploy/*

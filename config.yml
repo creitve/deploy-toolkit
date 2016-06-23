@@ -1,0 +1,39 @@
+---
+
+release_name: 4.3.7
+
+project_path: /path/to/projects/cscart
+
+stagings:
+  default:
+    include:
+    exclude:
+      - "^vendor/"
+  development:
+    include:
+    exclude:
+      - "^vendor/"
+
+servers:
+  - server:
+    name: dev1
+    host: 10.0.0.10
+    stage: development
+    user: vagrant
+    password: vagrant
+    deploy_path: /var/www/html
+    dbhost: localhost
+    dbuser: simtechdev
+    dbpwd: simtechdev
+    dbname: simtechdev
+  - server:
+    name: test1
+    host: 10.0.0.11
+    stage: testing
+    user: vagrant
+    password: vagrant
+    deploy_path: /var/www/html
+    dbhost: localhost
+    dbuser: simtechdev
+    dbpwd: simtechdev
+    dbname: simtechdev
