@@ -31,12 +31,16 @@ foreach ($defaultConfig->getServerList() as $server) {
     ->env('dbname',$server['dbname']);
 }
 
-task('prepare:development',function(){
+task('prepare',function(){
+  $stage = 'development';
+  if (input()->hasArgument('stage') && input()->getArgument('stage') != '') {
+      $stage = input()->getArgument('stage');
+  }
   runLocally("mkdir -p ./deploy");
-  $devConfig = new YamlConfig(get('config'),'development');
+  $devConfig = new YamlConfig(get('config'),$stage);
   $releaseArchive = env()->parse("release-{{release_name}}.zip");
   $devConfig->zipDir("./deploy/$releaseArchive");
-})->desc('prepare development release from project directory');
+})->desc('Prepare release from project directory');
 
 /* Preparing server for deployment. */
 task('deploy:prepare', function () {
@@ -64,56 +68,61 @@ task('deploy:prepare', function () {
 })->desc('Preparing server for deploy');
 
 task('clear',function(){
-  run("cd {{deploy_path}} && rm -rf ./*");
-})->desc('clear deploy directory');
+  run("cd {{deploy_path}} && rm -rf `ls | grep -v vendor`");
+})->desc('Clear deploy directory');
 
-task('deploy:durty_release',function(){
-  $releaseArchive = env()->parse("release-{{release_name}}.zip");
-  upload("./deploy/$releaseArchive","{{deploy_path}}/$releaseArchive");
-  writeln("<info>unzip release...</info>");
-  run("cd {{deploy_path}} && unzip -o $releaseArchive -x 'config.local.php' -x 'images/*' -x '.htaccess' && rm -rf $releaseArchive");
-})->desc('Durty release');
-
-task('deploy:clear_release',function(){
+task('deploy:uploadcode',function(){
   $releaseArchive = env()->parse("release-{{release_name}}.zip");
   upload("./deploy/$releaseArchive","{{deploy_path}}/$releaseArchive");
   writeln("<info>unzip release...</info>");
   run("cd {{deploy_path}} && unzip -o $releaseArchive && rm -rf $releaseArchive");
-})->desc('Durty release');
+})->desc('Upload code');
 
-task('deploy:migrate',function(){
-  $releaseDB = env()->parse("release-{{release_name}}.sql");
+task('migrate:dbinit',function(){
+  $releaseDB = env()->parse("release-{{release_name}}.sql.gz");
   if (runLocally("if [ -f ./deploy/$releaseDB ]; then echo 'true'; fi")->toBool()) {
     upload("./deploy/$releaseDB","{{deploy_path}}/$releaseDB");
     writeln("<info>migrating database...</info>");
-    run("cd {{deploy_path}} && mysql --host={{dbhost}} --user={{dbuser}} --password={{dbpwd}} {{dbname}} < $releaseDB && rm $releaseDB");
+    run("cd {{deploy_path}} && gunzip -c $releaseDB | mysql --host={{dbhost}} --user={{dbuser}} --password={{dbpwd}} {{dbname}} && rm $releaseDB");
   } else {
     writeln("<error>./deploy/$releaseDB not found</error>");
   }
-})->desc('Migrate database');
+})->desc("Restore DB from ./deploy/release-{{release_name}}.sql.gz file");
+
+task('migrate:dbmigrate',function(){
+  run("cd {{deploy_path}} && php ./vendor/bin/phinx migrate");
+})->desc('Database migration');
 
 task('deploy:clear_cache',function(){
   run("rm -rf {{deploy_path}}/var/cache/*");
-})->desc('clear cscart cache');
+})->desc('Clear cscart cache');
 
 task('deploy:fix_perms',function(){
   run("chown -R {{www_user}}:{{www_group}} {{deploy_path}}");
-})->desc('set up files/dirs permissions');
+})->desc('Set up files/dirs permissions');
+
+task('migrate:phinx_config',function(){
+  $config = new YamlConfig(get('config'),'default');
+  $config->servers2Phinx('./deploy/phinx.yml');
+  upload('./deploy/phinx.yml',"{{deploy_path}}/phinx.yml");
+})->desc("Create phinx config");
 
 task('deploy',[
   'deploy:prepare',
-  'deploy:durty_release',
-  'deploy:migrate',
+  'deploy:uploadcode',
+  'migrate:phinx_config',
+  'migrate:dbmigrate',
   'deploy:clear_cache',
-])->desc('deploy release CS-Cart');
+])->desc('Deploy new CS-Cart release');
 
 task('deploy-clear',[
   'clear',
   'deploy:prepare',
-  'deploy:clear_release',
-  'deploy:migrate',
+  'deploy:uploadcode',
+  'migrate:phinx_config',
+  'migrate:dbinit',
   'deploy:clear_cache',
-])->desc('Deploy new CS-Cart');
+])->desc('Deploy clear CS-Cart installation');
 
 task('success', function () {
   writeln("<info>Successfully deployed!</info>");

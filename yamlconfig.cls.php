@@ -6,7 +6,7 @@ class YamlConfig {
   protected $cArr;
   protected $env;
 
-  public function __construct ($config,$env) {
+  public function __construct ($config,$env='default') {
     $this->cArr = yaml_parse_file($config);
     $this->env = $env;
   }
@@ -60,6 +60,46 @@ class YamlConfig {
 
   public function getReleaseName() {
     return $this->cArr['release_name'];
+  }
+
+  public function servers2Phinx($file) {
+    $out = [];
+    $find_fields = ['dbhost','dbname','dbuser','dbpwd'];
+    foreach ($this->getServerList() as $key=>$server) {
+      foreach ($server as $k => $v) {
+        if (in_array($k,$find_fields)) {
+          $out[$server['stage']][$k] = $v;
+        }
+      }
+    }
+    $out = array_map(function($n) {
+      return array(
+        'adapter' => 'mysql',
+        'host' => $n['dbhost'],
+        'name' => $n['dbname'],
+        'user' => $n['dbuser'],
+        'pass' => $n['dbpwd'],
+        'port' => '3306',
+        'charset' => 'utf8'
+      );
+    }, $out);
+    $phinx = array(
+      'paths'=>array(
+        'migrations'=>'%%PHINX_CONFIG_DIR%%/db/migrations',
+      ),
+      'environments'=>array(
+        'default_migration_table' => 'phinxlog',
+        'default_database' => 'development',
+      ),
+    );
+    foreach ($out as $k => $v) {
+      $phinx['environments'][$k] = $v;
+    }
+    if (yaml_emit_file($file,$phinx)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   private function arrayToRegexp($arr) {

@@ -8,9 +8,11 @@ stagings:
   default:
     include:
     exclude:
+      - "^vendor"
   development:
     include:
     exclude:
+      - "^vendor"
 
 servers:
   - server:
