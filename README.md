@@ -1,6 +1,8 @@
-## About 
+## About
 
-CS-Cart and Multi-Vendor deployment toolkit for developers and system administrators. Current version is 1.0.1.
+CS-Cart and Multi-Vendor deployment toolkit is a simple script that helps developers and system administrators save a lot of time when deploying CS-Cart or Multi-Vendor installations. It will deliver your files to the servers specified, import data dumps and run the migrations.
+
+Current version is 1.0.1.
 
   * [Demo](#demo)
   * [Requirements](#requirements)
@@ -42,55 +44,54 @@ mkdir -p deploy-toolkit/deploy
 
 #### Usage
 
-1. Specify default settings in `config.yml`
+1. Specify these settings in `config.yml`
   - release_name: 4.3.8
   - project_path: /local/path/to/project/cscart
-  - servers config
+  - server config
 
 2. Run `dep prepare development` to create a ZIP archive for development environment
-3. Run `dep deploy development` to deploy code to the server.
+3. Run `dep deploy development` to deploy code to the servers.
 
 #### Functions description
 
 ###### prepare
 
-This function used for create zip archive release from project directory to local `./deploy` directory.
-Function use command line argument to define environment.
+- create a zip archive of the project.
 
- - create zip archive of project.
+This function will create a zip archive from project directory at the `./deploy` directory. Environment is supplied via a parameter.
 
 ###### deploy-clear
 
-This function can be used for deploy full code and full database.
-Follow steps are applied:
+This function can be used to deploy an entire project, both code and database.
+It will perform the following actions:
 
- - remove all files in to `{{deploy_path}}`
+ - remove all files in `{{deploy_path}}`
  - restore archive `release-{{release_name}}.zip` from local `./deploy` directory
  - restore dump `release-{{release_name}}.sql.gz` from local `./deploy` directory
  - clear cache
 
 ###### deploy
 
-This function can be used for deploy part of code and small changes in database.
-Follow steps are applied:
+This function can be used to deploy minor code changes and database migrations.
+It will:
 
  - restore archive `release-{{release_name}}.zip` from local `./deploy` directory.
- - run `phinx migrate` on server.
+ - run `phinx migrate` on the servers.
  - clear cache.
 
 #### Tasks description
 
 ###### clear
 
-Delete all files and directories from deploy directory, exclude `vendor` directory.
+Delete all files and directories from the deploy directory, excluding `vendor` directory.
 
 ###### deploy:prepare
 
-Check ssh connection and create deploy directory
+Check ssh connection and create the deployment directory.
 
 ###### deploy:uploadcode
 
-Upload zipped code of project on server to deploy directory and unzip it.
+Upload zipped project to deploy directory and unzip it.
 
 ###### deploy:clear_cache
 
@@ -98,17 +99,17 @@ Clear CS-Cart cache.
 
 ###### migrate:dbinit
 
-Restore mysql dump from local archive from `./deploy/release-{{release_name}}.sql.gz`.
+Restore mysql dump from local archive at `./deploy/release-{{release_name}}.sql.gz`.
 
 ###### migrate:dbmigrate
 
-Run `php ./vendor/bin/phinx migrate` on server.
+Run `php ./vendor/bin/phinx migrate` on the remote servers.
 
 ###### migrate:phinx_config
 
-Prepare phinx.yml config file and upload it to server.
+Prepare the phinx.yml config file and upload it.
 
-#### Help needed? 
+#### Help needed?
 
 For more documentation see [Deployer docs](http://deployer.org/docs) and deploy.php source code.
 
