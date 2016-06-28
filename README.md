@@ -25,7 +25,7 @@ Current version is 1.0.1.
 
 #### Demo
 
-[![asciicast](https://asciinema.org/a/dddsg010kaauba0g59o3nglo8.png)](https://asciinema.org/a/dddsg010kaauba0g59o3nglo8)
+[![asciicast](https://asciinema.org/a/abwq2v9d48saapc8bct9n2igo.png)](https://asciinema.org/a/abwq2v9d48saapc8bct9n2igo)
 
 #### Requirements
 
