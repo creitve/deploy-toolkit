@@ -23,6 +23,10 @@ Current version is 1.0.1.
   * [Help needed?](#help-needed)
   * [License](#license)
 
+#### Demo
+
+[![asciicast](https://asciinema.org/a/dddsg010kaauba0g59o3nglo8.png)](https://asciinema.org/a/dddsg010kaauba0g59o3nglo8)
+
 #### Requirements
 
 * [PHP](https://secure.php.net/) 5.5.0+
@@ -47,20 +51,34 @@ You can now proceed with the two main commands for deployment.
 Running `dep prepare development` will create a ZIP archive for the development environment.
 Then, `dep deploy development` will deploy everything to the remote servers.
 
-#### Commands
-<!-- commands -->
+#### Functions description
 
 ###### prepare
 
 - create a zip archive of the project.
 
+This function will create a zip archive from project directory at the `./deploy` directory. Environment is supplied via a parameter.
+
 ###### deploy-clear
 
 This function can be used to deploy an entire project, both code and database.
+It will perform the following actions:
+
+ - remove all files in `{{deploy_path}}`
+ - restore archive `release-{{release_name}}.zip`
+ - restore db from `release-{{release_name}}.sql.gz`
+ - clear cache
 
 ###### deploy
 
 This function can be used to deploy minor code changes and database migrations.
+It will:
+
+ - restore archive `release-{{release_name}}.zip`
+ - run `phinx migrate` on the servers.
+ - clear cache.
+
+#### Tasks description
 
 ###### clear
 
@@ -80,11 +98,11 @@ Clear CS-Cart cache.
 
 ###### migrate:dbinit
 
-Restore mysql dump from the local archive.
+Restore mysql dump from local archive.
 
 ###### migrate:dbmigrate
 
-Run migrations on the remote servers.
+Run migrations on remote servers.
 
 ###### migrate:phinx_config
 
